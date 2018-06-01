@@ -60,17 +60,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ButtonResponse.cs" />
-    <Compile Include="Converter.cs" />
-    <Compile Include="ConverterBot.cs" />
-    <Compile Include="ConvertResult.cs" />
-    <Compile Include="FileResponse.cs" />
-    <Compile Include="IBot.cs" />
-    <Compile Include="MessageResponse.cs" />
+    <Compile Include="TelegramHandler\ButtonResponse.cs" />
+    <Compile Include="Converter\Converter.cs" />
+    <Compile Include="ConverterBot\ConverterBot.cs" />
+    <Compile Include="Converter\ConvertResult.cs" />
+    <Compile Include="TelegramHandler\FileResponse.cs" />
+    <Compile Include="TelegramHandler\IBot.cs" />
+    <Compile Include="TelegramHandler\MessageResponse.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Session.cs" />
-    <Compile Include="TelegramHandler.cs" />
+    <Compile Include="ConverterBot\Session.cs" />
+    <Compile Include="TelegramHandler\TelegramHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

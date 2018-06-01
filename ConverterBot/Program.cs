@@ -5,7 +5,8 @@ namespace ConverterBot
     {
         static void Main(string[] args)
         {
-            var th = new TelegramHandler(new ConverterBot(new Converter()));
+            var converterBot = new ConverterBot(new Converter());
+            var th = new TelegramHandler(converterBot);
             th.Run();
         }
     }
