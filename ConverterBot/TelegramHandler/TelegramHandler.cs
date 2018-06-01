@@ -2,6 +2,7 @@
 using System.IO;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 
@@ -31,9 +32,11 @@ namespace ConverterBot
             var message = messageEventArgs.Message;
             if (message.Type == MessageType.Photo)
             {
-                var r = await TelegramClient.GetFileAsync(message.Photo[1].FileId);
+                if (CheckFileSize(message.Photo[1].FileSize, message.Chat.Id)) return;
+
+                var fileInfo = await TelegramClient.GetFileAsync(message.Photo[1].FileId);
                 using (var saveImageStream = new FileStream(message.Photo[1].FileId + ".jpg", FileMode.Create))
-                    await TelegramClient.GetInfoAndDownloadFileAsync(r.FileId, saveImageStream);
+                    await TelegramClient.GetInfoAndDownloadFileAsync(fileInfo.FileId, saveImageStream);
 
                 var response = Bot.HandleCommand(message.Photo[1].FileId + ".jpg", MessType.File, message.Chat.Id);
                 Reply(response, message.Chat.Id);
@@ -41,18 +44,22 @@ namespace ConverterBot
 
             if (message.Type == MessageType.Audio)
             {
-                var r = await TelegramClient.GetFileAsync(message.Audio.FileId);
+                if (CheckFileSize(message.Audio.FileSize, message.Chat.Id)) return;
+
+                var fileInfo = await TelegramClient.GetFileAsync(message.Audio.FileId);
                 using (var saveImageStream = new FileStream(message.Audio.FileId + message.Audio.MimeType.Split('/')[1], FileMode.Create))
-                    await TelegramClient.GetInfoAndDownloadFileAsync(r.FileId, saveImageStream);
+                    await TelegramClient.GetInfoAndDownloadFileAsync(fileInfo.FileId, saveImageStream);
                 var response = Bot.HandleCommand(message.Audio.FileId + message.Audio.MimeType.Split('/')[1], MessType.File, message.Chat.Id);
                 Reply(response, message.Chat.Id);
             }
 
             if (message.Type == MessageType.Document)
             {
-                var r = await TelegramClient.GetFileAsync(message.Document.FileId);
+                if (CheckFileSize(message.Document.FileSize, message.Chat.Id)) return;
+
+                var fileInfo = await TelegramClient.GetFileAsync(message.Document.FileId);
                 using (var saveImageStream = new FileStream(message.Document.FileName, FileMode.Create))
-                    await TelegramClient.GetInfoAndDownloadFileAsync(r.FileId, saveImageStream);
+                    await TelegramClient.GetInfoAndDownloadFileAsync(fileInfo.FileId, saveImageStream);
                 var response = Bot.HandleCommand(message.Document.FileName, MessType.File, message.Chat.Id);
                 Reply(response, message.Chat.Id);
             }
@@ -64,6 +71,17 @@ namespace ConverterBot
                 Reply(response, message.Chat.Id);
 
             }
+        }
+
+        private bool CheckFileSize(long size, long chtId)
+        {
+            if (size / 1024 / 1024 > 30)
+            {
+                Reply(new MessageResponse("Too big file"), chtId);
+                return true;
+            }
+
+            return false;
         }
 
 
